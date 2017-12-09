@@ -19,11 +19,17 @@
 // which for my puzzle input is 4567. WTF?! I keep getting 5363.
 
 // okay, I break into using node now because I'm tired of the big input files
+// will be using for-each-line to get each line of input
+
 var forEachLine = require('for-each-line');
 const fileName = "day8.txt";
 var line;
 var register = [];
 var i;
+
+// function doOperation: perform operation by amount on register regNum
+// operated entirely on global data, no return value
+// records but does not throw error if one arises
 
 function doOperation(amount,regNum,operation) {
   if (operation === "inc") {
@@ -35,7 +41,10 @@ function doOperation(amount,regNum,operation) {
   }
 }
 
+// main
+
 // grab the next instruction
+
 forEachLine(fileName, (line) => {
   var instruction = line.split(" ");
   var reg1 = instruction[0];
@@ -48,6 +57,7 @@ forEachLine(fileName, (line) => {
   var r2 = -1;
 
   // get the register indexes for the comparison and possible operation
+
   for (i=0; i<register.length; i++) {
     if (register[i].name === reg1) {
       r1 = i;
@@ -58,9 +68,12 @@ forEachLine(fileName, (line) => {
   }
 
   // add any missing register, initialized to 0
+
   if (r1 === -1) {
     r1 = register.length;
-    // handle the case of the same register being used
+
+    // handle the case of the same register being used twice in one line
+
     if (reg1 === reg2) {
       r2 = register.length;
     }
@@ -72,6 +85,7 @@ forEachLine(fileName, (line) => {
   }
 
   // verify we have valid registers before proceeding
+
   if (register[r1].name != reg1) {
     console.log("ERROR: register mismatch for",r1,reg1);
   }
@@ -81,6 +95,9 @@ forEachLine(fileName, (line) => {
 
   // run the comparison and perform the operation if it evaluates to true
   // comparator may be any of: > < >= <= == !=
+  // if there's a way to turn string data into an executable comparator
+  //   I haven't found it yet: it'd remove the need for a switch statement
+
   switch (comp) {
     case ">":
       if (register[r2].value > val2) {
@@ -117,8 +134,9 @@ forEachLine(fileName, (line) => {
   }
 
 // when we've reached end of the file: determine the value of the largest register
+
 }).then(() => {
-  var max = -99999999999999;
+  var max = -99999999999999;  // from my reading so far, this is MININT
   for (i=0; i<register.length; i++) {
     if (register[i].value > max) {
       max = register[i].value;

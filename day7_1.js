@@ -6,7 +6,8 @@
 // there are no nodes with the same name.
 //
 
-// puzzle input: I should move this to a separate file
+// puzzle input, uniquely generated for each participant
+// I should move this to a separate file (did this with day 9)
 const list  = [
 { name: 'dsiixv', weight: 52, children: [], parent: '' },
 { name: 'fhimhm', weight: 66, children: [], parent: '' },

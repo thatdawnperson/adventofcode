@@ -12,6 +12,9 @@
 //
 
 // puzzle input
+// taking advantage of not having moved the input to a file to use a few
+// simple 'vi' tricks to get a happy known starting state for this puzzle
+
 const list  = [
  { name: 'dsiixv', weight: 52, children: [], parent: '', parentNo: 0, childWeight: 0 },
  { name: 'fhimhm', weight: 66, children: [], parent: '', parentNo: 0, childWeight: 0 },
@@ -1150,24 +1153,36 @@ function traverseNode(nodeNum) {
   var totalWeight = list[nodeNum].weight;
   var childWeights = [];
 
-  if (list[nodeNum].children.length<1) {
+  if (list[nodeNum].children.length<1) { // no children? just need to note weight
     return totalWeight;
   }
 
-  for (i=0; i<list[nodeNum].children.length; i++) {
+  for (i=0; i<list[nodeNum].children.length; i++) {  // for every child
+
     // gather weights of the branch and record them
+
     childWeights.push(traverseNode(list[nodeNum].children[i]));
     list[nodeNum].childWeight += childWeights[i];
   }
 
   // note any anomaly: check to see if the first child weight === the mean
+
   var checkValue = list[nodeNum].childWeight / list[nodeNum].children.length;
+
+  // we have an imbalance: report
+
   if (checkValue != allWeights[list[nodeNum].children[0]]) {
     console.log("Imbalance at node", nodeNum,":",checkValue,"is not",allWeights[list[nodeNum].children[0]]);
+
+    // list the weights of all children and let the operator visually determine
+    // the needed adjustment: I should calculate the mode and provide the number
+
     for (i=0; i<list[nodeNum].children.length; i++) {
       console.log("Child",list[nodeNum].children[i],"weight",allWeights[list[nodeNum].children[i]],"local weight",list[list[nodeNum].children[i]].weight);
     } 
   }
+
+  // record the weights
 
   totalWeight = list[nodeNum].childWeight + list[nodeNum].weight;
   allWeights[nodeNum] = totalWeight;
@@ -1175,6 +1190,7 @@ function traverseNode(nodeNum) {
 }
 
 // matchMaker function: assign a parent to one child
+
 function matchMaker(thisChild, thisParent, parentNo) {
   var i;
   for (i=0; i<list.length; i++) {
@@ -1187,6 +1203,8 @@ function matchMaker(thisChild, thisParent, parentNo) {
 }
 
 // traverse the tree, assigning a parent to each node that is listed as a child
+// yes, I should just start using associative arrays
+// yes, I didn't realize JavaScipt had them because I'm a doof
 
 var i;
 for (i=0; i<list.length; i++) {
@@ -1212,5 +1230,4 @@ for (i=0; i<list.length; i++) {
 // fortunately we have cleverly turned our array into a traversable tree
 // so let's recurse
 
-// console.log("Root is",root);
 traverseNode(root);

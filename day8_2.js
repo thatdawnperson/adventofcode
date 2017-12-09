@@ -16,9 +16,9 @@
 //
 // Output:
 //   the largest value in any register
-// which for my puzzle input is 4567. WTF?! I keep getting 5363.
 
 // okay, I break into using node now because I'm tired of the big input files
+
 var forEachLine = require('for-each-line');
 const fileName = "day8.txt";
 var line;
@@ -29,13 +29,13 @@ var highestVal = -99999999999999;
 function doOperation(amount,regNum,operation) {
   if (operation === "inc") {
     register[regNum].value += amount;
-    if (register[regNum].value > highestVal) {
-      highestVal = register[regNum].value;
+    if (register[regNum].value > highestVal) { // this time we track highest value
+      highestVal = register[regNum].value;     // even if it's transient
     }
   } else if (operation === "dec") {
     register[regNum].value -= amount;
-    if (register[regNum].value > highestVal) {
-      highestVal = register[regNum].value;
+    if (register[regNum].value > highestVal) { // this time we track highest value
+      highestVal = register[regNum].value;     // even if it's transient
     }
   } else {
     console.log("ERROR: invalid instruction",operation);
@@ -43,6 +43,7 @@ function doOperation(amount,regNum,operation) {
 }
 
 // grab the next instruction
+
 forEachLine(fileName, (line) => {
   var instruction = line.split(" ");
   var reg1 = instruction[0];
@@ -55,6 +56,7 @@ forEachLine(fileName, (line) => {
   var r2 = -1;
 
   // get the register indexes for the comparison and possible operation
+
   for (i=0; i<register.length; i++) {
     if (register[i].name === reg1) {
       r1 = i;
@@ -65,9 +67,12 @@ forEachLine(fileName, (line) => {
   }
 
   // add any missing register, initialized to 0
+
   if (r1 === -1) {
     r1 = register.length;
+
     // handle the case of the same register being used
+
     if (reg1 === reg2) {
       r2 = register.length;
     }
@@ -79,6 +84,7 @@ forEachLine(fileName, (line) => {
   }
 
   // verify we have valid registers before proceeding
+
   if (register[r1].name != reg1) {
     console.log("ERROR: register mismatch for",r1,reg1);
   }
@@ -88,6 +94,7 @@ forEachLine(fileName, (line) => {
 
   // run the comparison and perform the operation if it evaluates to true
   // comparator may be any of: > < >= <= == !=
+
   switch (comp) {
     case ">":
       if (register[r2].value > val2) {
@@ -123,7 +130,8 @@ forEachLine(fileName, (line) => {
       console.log("ERROR: invalid comparator",comp);
   }
 
-// when we've reached end of the file: determine the value of the largest register
+// when we've reached end of the file: output the value of the largest register
+
 }).then(() => {
   console.log('Highest value is',highestVal);
 });
