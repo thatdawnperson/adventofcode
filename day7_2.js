@@ -1145,6 +1145,7 @@ const list  = [
 // store the total weight at each node for lazy access
 
 var allWeights = [];
+var reported = 0; // only report the first (deepest) imbalance in the tree
 
 // traverse the tree to determine total weight at each node
 
@@ -1172,14 +1173,31 @@ function traverseNode(nodeNum) {
   // we have an imbalance: report
 
   if (checkValue != allWeights[list[nodeNum].children[0]]) {
-    console.log("Imbalance at node", nodeNum,":",checkValue,"is not",allWeights[list[nodeNum].children[0]]);
+//    console.log("Imbalance at node", nodeNum,":",checkValue,"is not",allWeights[list[nodeNum].children[0]]);
 
-    // list the weights of all children and let the operator visually determine
-    // the needed adjustment: I should calculate the mode and provide the number
+    // note the weights of all children and find the needed adjustment
 
+    var findMode = [];
+    var localWeights = [];
     for (i=0; i<list[nodeNum].children.length; i++) {
-      console.log("Child",list[nodeNum].children[i],"weight",allWeights[list[nodeNum].children[i]],"local weight",list[list[nodeNum].children[i]].weight);
+      findMode.push(allWeights[list[nodeNum].children[i]]);
+//      console.log("Child",list[nodeNum].children[i],"weight",allWeights[list[nodeNum].children[i]],"local weight",list[list[nodeNum].children[i]].weight);
     } 
+    // since only one node is out of balance, assume we have at least 3 child
+    // nodes and find the mode by examining the first 3 branches
+    var mode;
+    if (findMode[0] === findMode[1]) mode=findMode[0];
+    if (findMode[0] === findMode[2]) mode=findMode[0];
+    if (findMode[1] === findMode[2]) mode=findMode[1];
+    for (i=0; i<findMode.length; i++) {
+      if (findMode[i] != mode) {
+        var difference = mode - findMode[i]; // need to add this to the weight
+        if (reported === 0) {
+          console.log("Child",list[nodeNum].children[i],"local weight should be changed to",list[list[nodeNum].children[i]].weight+difference);
+          reported++;
+        }
+      }
+    }
   }
 
   // record the weights
@@ -1203,8 +1221,6 @@ function matchMaker(thisChild, thisParent, parentNo) {
 }
 
 // traverse the tree, assigning a parent to each node that is listed as a child
-// yes, I should just start using associative arrays
-// yes, I didn't realize JavaScipt had them because I'm a doof
 
 var i;
 for (i=0; i<list.length; i++) {
