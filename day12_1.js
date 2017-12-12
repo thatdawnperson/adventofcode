@@ -21,20 +21,11 @@ function traverseNode(nodeNum) {
   var i;
   if (seenNode[nodeNum] > 0) return; // do not need to visit a place twice
   seenNode[nodeNum]++;
+  
+  // direct connections are neighbours
 
-  // special case for the start of our walk: I am my own neighbour
-  if (nodeNum === 0) {
+  if (zeroNeighbour[graph[nodeNum][0]] > 0) {
     zeroNeighbour[nodeNum] = 1;
-    for (i=0; i<graph[nodeNum].length; i++) {
-      zeroNeighbour[graph[nodeNum][i]] = 1;
-    }
-  } else {
-
-    // direct connections are neighbours
-
-    if (zeroNeighbour[graph[nodeNum][0]] > 0) {
-      zeroNeighbour[nodeNum] = 1;
-    }
   }
 
   // their neighbours need to be added to the group: time for recursion!
