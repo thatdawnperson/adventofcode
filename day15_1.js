@@ -14,9 +14,6 @@
 // Output:
 //   the number of times the lowest 16 bits match
 
-// we need to use a library for big integer math
-var crunch = require('number-crunch');
-
 var a = 116;
 var b = 299;
 const dividend = 2147483647;
