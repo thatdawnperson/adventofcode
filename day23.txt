@@ -1,0 +1,32 @@
+set b 93		when debugging, set B = 93
+set c b			when debugging, set C = 93
+jnz a 2			test to determine whether to use "live" values
+jnz 1 5			skip using "live" values when debugging
+mul b 100
+sub b -100000		oh my! B got a lot larger
+set c b			match it with C
+sub c -17000		now add 17k, so we check 1001 numbers in total
+set f 1			<== start of main loop		LABEL 1
+set d 2
+set e 2			<== start of second loop	LABEL 2
+set g d			<== start of third loop		LABEL 3
+mul g e			
+sub g b			at this point, G = D * E - B, which is only true when B is not prime
+jnz g 2
+set f 0			when B = D * E, we set F to 0 (found a non-prime)
+sub e -1		increment E by 1
+set g e
+sub g b
+jnz g -8		GOTO LABEL 3 IF E>B
+sub d -1		increment D by 1
+set g d
+sub g b
+jnz g -13 		GOTO LABEL 2 if D>B
+jnz f 2			did we find a non-prime?
+sub h -1		increment our count of non-primes found
+set g b
+sub g c 		at this point, G is 0 if we've counted from B to C
+jnz g 2 		if we're too low or too high, we'll go around again
+jnz 1 3			EXIT once we've counted B all the way up
+sub b -17		step count by 17
+jnz 1 -23		GOTO LABEL 1
